@@ -1,10 +1,14 @@
 /*
   Arduino Library for RV-3028-C7
 
-  Copyright (c) 2020 Macro Yau
-
+  Original Author: Copyright (c) 2020 Macro Yau
   https://github.com/MacroYau/RV-3028-C7-Arduino-Library
+
+  Modified by Unexpected Maker: 2023-10-7
+  - Added the ability to set the time from a tm struct
+  - Added the ability to extra date & components by component enum  
 */
+
 
 #ifndef RV3028C7_H
 #define RV3028C7_H
@@ -158,7 +162,8 @@
 
 #define DATETIME_COMPONENTS 7
 
-enum DateTimeComponent {
+enum DateTimeComponent
+{
   DATETIME_SECOND = 0,
   DATETIME_MINUTE = 1,
   DATETIME_HOUR = 2,
@@ -169,7 +174,8 @@ enum DateTimeComponent {
 };
 typedef uint8_t DateTimeComponent_t;
 
-enum DayOfWeek {
+enum DayOfWeek
+{
   SUN = 0,
   MON = 1,
   TUE = 2,
@@ -180,7 +186,8 @@ enum DayOfWeek {
 };
 typedef uint8_t DayOfWeek_t;
 
-enum ClockOutputFrequency {
+enum ClockOutputFrequency
+{
   CLKOUT_32768HZ = 0,
   CLKOUT_8192HZ = 1,
   CLKOUT_1024HZ = 2,
@@ -192,7 +199,8 @@ enum ClockOutputFrequency {
 };
 typedef uint8_t ClockOutputFrequency_t;
 
-enum AlarmMode {
+enum AlarmMode
+{
   ALARM_DISABLED = 0,
   ALARM_ONCE_PER_DAY_OF_MONTH_OR_WEEK = 1,
   ALARM_ONCE_PER_HOUR_PER_DAY_OF_MONTH_OR_WEEK = 2,
@@ -201,7 +209,8 @@ enum AlarmMode {
 };
 typedef uint8_t AlarmMode_t;
 
-enum InterruptType {
+enum InterruptType
+{
   INTERRPUT_PERIODIC_TIME_UPDATE = BP_REG_CONTROL_2_UIE,
   INTERRUPT_PERIODIC_COUNTDOWN_TIMER = BP_REG_CONTROL_2_TIE,
   INTERRUPT_ALARM = BP_REG_CONTROL_2_AIE,
@@ -209,7 +218,8 @@ enum InterruptType {
 };
 typedef uint8_t InterruptType_t;
 
-enum TimerClockFrequency {
+enum TimerClockFrequency
+{
   TIMER_4096HZ = 0,
   TIMER_64HZ = 1,
   TIMER_1HZ = 2,
@@ -217,7 +227,8 @@ enum TimerClockFrequency {
 };
 typedef uint8_t TimerClockFrequency_t;
 
-class RV3028C7 {
+class RV3028C7
+{
 public:
   RV3028C7();
   bool begin(TwoWire &wirePort = Wire);
@@ -226,8 +237,10 @@ public:
   bool setUnixTimestamp(uint32_t secondsSinceEpoch, bool syncCalendar = true);
 
   char *getCurrentDateTime();
+  uint8_t getCurrentDateTimeComponent(DateTimeComponent_t component);
   void setDateTimeFromISO8601(String iso8601);
   void setDateTimeFromISO8601(const char *iso8601);
+  bool setDateTimeFromTM(tm &timeinfo);
   void setDateTimeFromHTTPHeader(String str);
   void setDateTimeFromHTTPHeader(const char *str);
   bool setDateTime(uint16_t year, uint8_t month, uint8_t dayOfMonth,
